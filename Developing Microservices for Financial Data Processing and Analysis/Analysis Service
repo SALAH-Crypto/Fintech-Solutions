@@ -1,0 +1,24 @@
+# analysisService.py
+from flask import Flask, request, jsonify
+import pandas as pd
+from pymongo import MongoClient
+
+app = Flask(__name__)
+client = MongoClient('localhost', 27017)
+db = client.TransactionService
+transactions = db.transactions
+
+@app.route('/analyze/<user_id>', methods=['GET'])
+def analyze(user_id):
+    user_transactions = transactions.find({"userId": user_id})
+    df = pd.DataFrame(list(user_transactions))
+    total_spent = df[df['type'] == 'debit']['amount'].sum()
+    total_received = df[df['type'] == 'credit']['amount'].sum()
+    return jsonify({
+        'total_spent': total_spent,
+        'total_received': total_received,
+        'balance': total_received - total_spent
+    })
+
+if __name__ == '__main__':
+    app.run(port=5000)
