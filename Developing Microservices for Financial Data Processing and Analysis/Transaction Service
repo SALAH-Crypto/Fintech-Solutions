@@ -1,0 +1,38 @@
+// transactionService.js
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+
+const app = express();
+app.use(bodyParser.json());
+
+mongoose.connect('mongodb://localhost/TransactionService', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+const transactionSchema = new mongoose.Schema({
+  userId: mongoose.Schema.Types.ObjectId,
+  amount: Number,
+  type: String,
+  date: Date,
+});
+
+const Transaction = mongoose.model('Transaction', transactionSchema);
+
+app.post('/transactions', async (req, res) => {
+  const { userId, amount, type, date } = req.body;
+  const transaction = new Transaction({ userId, amount, type, date });
+  await transaction.save();
+  res.status(201).send('Transaction recorded');
+});
+
+app.get('/transactions/:userId', async (req, res) => {
+  const { userId } = req.params;
+  const transactions = await Transaction.find({ userId });
+  res.json(transactions);
+});
+
+app.listen(4000, () => {
+  console.log('Transaction service running on port 4000');
+});
