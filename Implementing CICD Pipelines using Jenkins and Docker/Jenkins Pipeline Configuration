@@ -1,0 +1,26 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building...'
+                sh 'docker build -t transaction-service:latest ./transaction-service'
+                sh 'docker build -t analysis-service:latest ./analysis-service'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing...'
+                sh 'docker run transaction-service:latest npm test'
+                sh 'docker run analysis-service:latest python -m unittest'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying...'
+                sh 'docker-compose up -d'
+            }
+        }
+    }
+}
