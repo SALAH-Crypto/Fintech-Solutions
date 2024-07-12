@@ -1,0 +1,25 @@
+# Implement Transaction Service
+
+## Description
+
+This PR implements the transaction service which allows users to record their financial transactions. The service includes endpoints for creating and retrieving transactions.
+
+## Changes
+
+- Added `transactionService.js` with endpoints for creating and retrieving transactions.
+- Set up MongoDB connection and defined the transaction schema.
+
+## How to Test
+
+1. Run the transaction service using `node transactionService.js`.
+2. Use Postman or a similar tool to send POST and GET requests to the service endpoints.
+
+## Related Issues
+
+- Closes #1
+
+## Checklist
+
+- [x] Code compiles correctly.
+- [x] All tests are passing.
+- [x] Peer-reviewed and approved.
